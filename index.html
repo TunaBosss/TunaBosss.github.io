@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>The S.T.A.L.K.E.R. GAMMA PDA</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="style.css">
+	<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+<body>
+	<div class="header">
+		<p>Version 0.1.0</p> <br />
+		<h1>The S.T.A.L.K.E.R. <br /> GAMMA PDA</h1>
+		<!--
+		<a href="index.html">Map</a>
+		<a href="guide.html">Guide</a>
+		<a href="about.html">About</a>
+		-->
+	</div>
+	<div class="main">
+		<div id="map"></div>
+		<script>
+
+			// Map code
+			var map = L.map('map', {
+    			crs: L.CRS.Simple,
+				center: [489.4, 192],
+				zoom: 1,
+				minZoom: 1,
+				maxZoom: 3.5,
+				zoomSnap: 0.5,
+				maxBounds: [[0, -150], [978.8, 534]],
+				maxBoundsViscosity: 0.75,
+				attributionControl: false,
+			});
+			var bounds = [[0,0], [978.8,384.0]];
+			var image = L.imageOverlay('images/map.png', bounds).addTo(map);
+
+			// Marker + Icon class
+			var MapIcon = L.Icon.extend({
+    			options: {
+        			iconSize:     [20, 20],
+        			iconAnchor:   [10, 10],
+        			popupAnchor:  [0, -5],
+					tootltipAnchor: [0, -5],
+    			}
+			});
+
+			// Icon creation & applying options
+			var	barIcon = new MapIcon({iconUrl:'images/mapicons/bar.png'}),
+				bedIcon = new MapIcon({iconUrl:'images/mapicons/bed.png'}),
+		        campIcon = new MapIcon({iconUrl:'images/mapicons/camp.png'}),
+				charIcon = new MapIcon({iconUrl:'images/mapicons/char.png'}),
+				exitIcon = new MapIcon({iconUrl:'images/mapicons/exit.png'}),
+				guideIcon = new MapIcon({iconUrl:'images/mapicons/guide.png'}),
+				medicIcon = new MapIcon({iconUrl:'images/mapicons/medic.png'}),
+				techIcon = new MapIcon({iconUrl:'images/mapicons/tech.png'}),
+				traderIcon = new MapIcon({iconUrl:'images/mapicons/trader.png'}),
+				travelIcon = new MapIcon({iconUrl:'images/mapicons/travel.png'}),
+				lonerIcon = new MapIcon({iconUrl:'images/factionicons/loner.png'}),
+				skyIcon = new MapIcon({iconUrl:'images/factionicons/sky.png'}),
+				banditIcon = new MapIcon({iconUrl:'images/factionicons/bandit.png'}),
+				dutyIcon = new MapIcon({iconUrl:'images/factionicons/duty.png'}),
+				freeIcon = new MapIcon({iconUrl:'images/factionicons/free.png'}),
+				mercIcon = new MapIcon({iconUrl:'images/factionicons/merc.png'}),
+				miliIcon = new MapIcon({iconUrl:'images/factionicons/mili.png'}),
+				ecoIcon = new MapIcon({iconUrl:'images/factionicons/eco.png'}),
+				monoIcon = new MapIcon({iconUrl:'images/factionicons/mono.png'}),
+				renegIcon = new MapIcon({iconUrl:'images/factionicons/reneg.png'}),
+				sinIcon = new MapIcon({iconUrl:'images/factionicons/sin.png'}),
+				unisgIcon = new MapIcon({iconUrl:'images/factionicons/unisg.png'});
+
+			L.icon = function (options) {
+				return new L.Icon(options);
+			};
+
+			// Create marker variables with location, icon, popups, and add to map
+			// Test Markers
+			var testBar = L.marker([195, 5], {icon: barIcon}).addTo(map).bindTooltip("Bartender", {direction:'top', offset:[0, -5]});
+			var testGuide = L.marker([195, 55], {icon: guideIcon}).addTo(map).bindTooltip("Guide", {direction:'top', offset:[0, -5]});
+			var testMedic = L.marker([195, 65], {icon: medicIcon}).addTo(map).bindTooltip("Medic", {direction:'top', offset:[0, -5]});
+			var testSky = L.marker([210, 15], {icon: skyIcon}).addTo(map).bindTooltip("Clear Sky", {direction:'top', offset:[0, -5]});
+			var testBandit = L.marker([210, 25], {icon: banditIcon}).addTo(map).bindTooltip("Bandit", {direction:'top', offset:[0, -5]});
+			var testDuty = L.marker([210, 35], {icon: dutyIcon}).addTo(map).bindTooltip("Duty", {direction:'top', offset:[0, -5]});
+			var testFree = L.marker([210, 45], {icon: freeIcon}).addTo(map).bindTooltip("Freedom", {direction:'top', offset:[0, -5]});
+			var testMerc = L.marker([210, 55], {icon: mercIcon}).addTo(map).bindTooltip("Mercenary", {direction:'top', offset:[0, -5]});
+			var testMili = L.marker([210, 65], {icon: miliIcon}).addTo(map).bindTooltip("Military", {direction:'top', offset:[0, -5]});
+			var testEco = L.marker([210, 75], {icon: ecoIcon}).addTo(map).bindTooltip("Ecologist", {direction:'top', offset:[0, -5]});
+			var testMono = L.marker([210, 85], {icon: monoIcon}).addTo(map).bindTooltip("Monolith", {direction:'top', offset:[0, -5]});
+			var testReneg = L.marker([210, 95], {icon: renegIcon}).addTo(map).bindTooltip("Renegade", {direction:'top', offset:[0, -5]});
+			var testSin = L.marker([210, 105], {icon: sinIcon}).addTo(map).bindTooltip("Sin", {direction:'top', offset:[0, -5]});
+			var testUnisg = L.marker([210, 115], {icon: unisgIcon}).addTo(map).bindTooltip("UNISG", {direction:'top', offset:[0, -5]});
+
+			// The Cordon
+			var cordonArtifactOne = L.circle([192, 180], {color:'white', fillColor:'white', fillOpacity:0.25, radius: 3, weight:1.5}).addTo(map).bindTooltip("Anomaly", {direction:'top', offset:[0, -15]});
+			var cordonArtifactTwo = L.circle([154.5, 161], {color:'white', fillColor:'white', fillOpacity:0.25, radius: 3, weight:1.5}).addTo(map).bindTooltip("Anomaly", {direction:'top', offset:[0, -15]});
+			var cordonArtifactThree = L.circle([160, 204], {color:'white', fillColor:'white', fillOpacity:0.25, radius: 3, weight:1.5}).addTo(map).bindTooltip("Anomaly", {direction:'top', offset:[0, -15]});
+			var cordonArtifactFour = L.circle([136, 143], {color:'white', fillColor:'white', fillOpacity:0.25, radius: 3, weight:1.5}).addTo(map).bindTooltip("Anomaly", {direction:'top', offset:[0, -15]});
+			var cordonBedOne = L.marker([164.5, 169], {icon: bedIcon, riseOnHover:true}).addTo(map).bindTooltip("Bed", {direction:'top', offset:[0, -5]});
+			var cordonBedTwo = L.marker([125, 146.5], {icon: bedIcon, riseOnHover:true}).addTo(map).bindTooltip("Bed", {direction:'top', offset:[0, -5]});
+			var cordonTravelOne = L.marker([208, 168], {icon: travelIcon, riseOnHover:true}).addTo(map).bindTooltip("Fast Travel", {direction:'top', offset:[0, -5]});
+			var cordonTravelTwo = L.marker([172, 182], {icon: travelIcon, riseOnHover:true}).addTo(map).bindTooltip("Fast Travel", {direction:'top', offset:[0, -5]});
+			var cordonTravelThree = L.marker([166.5, 167], {icon: travelIcon, riseOnHover:true}).addTo(map).bindTooltip("Fast Travel", {direction:'top', offset:[0, -5]});
+			var cordonTravelFour = L.marker([154.5, 174.5], {icon: travelIcon, riseOnHover:true}).addTo(map).bindTooltip("Fast Travel", {direction:'top', offset:[0, -5]});
+			var cordonTravelFive = L.marker([147, 168], {icon: travelIcon, riseOnHover:true}).addTo(map).bindTooltip("Fast Travel", {direction:'top', offset:[0, -5]});
+			var cordonTravelSix = L.marker([136.5, 180.5], {icon: travelIcon, riseOnHover:true}).addTo(map).bindTooltip("Fast Travel", {direction:'top', offset:[0, -5]});
+			var cordonTravelSeven = L.marker([123, 149], {icon: travelIcon, riseOnHover:true}).addTo(map).bindTooltip("Fast Travel", {direction:'top', offset:[0, -5]});
+			var cordonExitOne = L.marker([209, 171.5], {icon: exitIcon, riseOnHover:true}).addTo(map).bindTooltip("Map Exit", {direction:'top', offset:[0, -5]});
+			var cordonExitTwo = L.marker([172.5, 152], {icon: exitIcon, riseOnHover:true}).addTo(map).bindTooltip("Map Exit", {direction:'top', offset:[0, -5]});
+			var cordonExitThree = L.marker([162.5, 147.5], {icon: exitIcon, riseOnHover:true}).addTo(map).bindTooltip("Map Exit", {direction:'top', offset:[0, -5]});
+			var cordonExitFour = L.marker([173.5, 200.5], {icon: exitIcon, riseOnHover:true}).addTo(map).bindTooltip("Map Exit", {direction:'top', offset:[0, -5]});
+			var cordonExitFive = L.marker([135, 205.5], {icon: exitIcon, riseOnHover:true}).addTo(map).bindTooltip("Map Exit", {direction:'top', offset:[0, -5]});
+			var cordonExitSix = L.marker([111, 140.5], {icon: exitIcon, riseOnHover:true}).addTo(map).bindTooltip("Map Exit", {direction:'top', offset:[0, -5]});
+			var cordonExitSeven = L.marker([90, 163], {icon: exitIcon, riseOnHover:true}).addTo(map).bindTooltip("Map Exit", {direction:'top', offset:[0, -5]});
+			var cordonCharOne = L.marker([123, 147], {icon: charIcon, riseOnHover:true}).addTo(map).bindTooltip("Important Character", {direction:'top', offset:[0, -5]});
+			var cordonCharTwo = L.marker([124, 143], {icon: charIcon, riseOnHover:true}).addTo(map).bindTooltip("Important Character", {direction:'top', offset:[0, -5]});
+			var cordonCharThree = L.marker([123, 151], {icon: charIcon, riseOnHover:true}).addTo(map).bindTooltip("Important Character", {direction:'top', offset:[0, -5]});
+			var cordonTech = L.marker([168.5, 169], {icon: techIcon, riseOnHover:true}).addTo(map).bindTooltip("Technician", {direction:'top', offset:[0, -5]});
+			var cordonTraderOne = L.marker([168.5, 167], {icon: traderIcon, riseOnHover:true}).addTo(map).bindTooltip("Trader", {direction:'top', offset:[0, -5]});
+			var cordonTraderTwo = L.marker([123.5, 145], {icon: traderIcon, riseOnHover:true}).addTo(map).bindTooltip("Trader", {direction:'top', offset:[0, -5]});
+			var cordonLonerOne = L.marker([166.5, 169], {icon: lonerIcon, riseOnHover:true}).addTo(map).bindTooltip("Loners", {direction:'top', offset:[0, -5]});
+			var cordonLonerTwo = L.marker([125, 149], {icon: lonerIcon, riseOnHover:true}).addTo(map).bindTooltip("Loners", {direction:'top', offset:[0, -5]});
+			var cordonCampOne = L.marker([207, 171.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampTwo = L.marker([201.5, 175.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampThree = L.marker([170, 153], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampFour = L.marker([166.5, 171], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampFive = L.marker([173, 183.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampSix = L.marker([173, 192.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampSeven = L.marker([158.5, 162], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampEight = L.marker([150, 160.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampNine = L.marker([152.5, 174.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampTen = L.marker([166, 201.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampEleven = L.marker([142, 159.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampTwelve = L.marker([145, 168], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampThirteen = L.marker([146, 180], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampFourteen = L.marker([150.5, 200.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampFifteen = L.marker([134, 147.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampSixteen = L.marker([130.5, 159.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampSeventeen = L.marker([131.5, 171.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampEightteen = L.marker([134.5, 180.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampNineteen = L.marker([137.5, 200.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampTwenty = L.marker([121, 149], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampTwentyone = L.marker([125.5, 166], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampTwentytwo = L.marker([113, 145.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampTwentythree = L.marker([116, 157], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+			var cordonCampTwentyfour = L.marker([99, 154.5], {icon: campIcon}).addTo(map).bindTooltip("Campfire", {direction:'top', offset:[0, -5]});
+
+			// Create marker layer groups
+			var all = L.layerGroup([cordonArtifactOne, cordonArtifactTwo, cordonArtifactThree, cordonArtifactFour, cordonBedOne, cordonBedTwo, cordonTravelOne, 
+			cordonTravelTwo, cordonTravelThree, cordonTravelFour, cordonTravelFive, cordonTravelSix, cordonTravelSeven, cordonExitOne, cordonExitTwo, cordonExitThree, 
+			cordonExitFour, cordonExitFive, cordonExitSix, cordonExitSeven, cordonCharOne, cordonCharTwo, cordonCharThree, cordonTech, cordonTraderOne, cordonTraderTwo, 
+			cordonLonerOne, cordonLonerTwo, cordonCampOne, cordonCampTwo, cordonCampThree, cordonCampFour, cordonCampFive, cordonCampSix, cordonCampSeven, cordonCampEight, 
+			cordonCampNine, cordonCampTen, cordonCampEleven, cordonCampTwelve, cordonCampThirteen, cordonCampFourteen, cordonCampFifteen, cordonCampSixteen, cordonCampSeventeen,
+			cordonCampEightteen, cordonCampNineteen, cordonCampTwenty, cordonCampTwentyone, cordonCampTwentytwo, cordonCampTwentythree, cordonCampTwentyfour, testBar,
+			testGuide, testMedic, 
+			testSky, testBandit, testDuty, testFree, testMerc, testMili, testEco, testMono, testReneg, testSin, testUnisg]).addTo(map);
+
+			var artifacts = L.layerGroup([cordonArtifactOne, cordonArtifactTwo, cordonArtifactThree, cordonArtifactFour]).addTo(map);
+			var bars = L.layerGroup([testBar]).addTo(map);
+			var beds = L.layerGroup([cordonBedOne, cordonBedTwo]).addTo(map);
+			var camps = L.layerGroup([cordonCampOne, cordonCampTwo, cordonCampThree, cordonCampFour, cordonCampFive, cordonCampSix, cordonCampSeven, cordonCampEight, 
+			cordonCampNine, cordonCampTen, cordonCampEleven, cordonCampTwelve, cordonCampThirteen, cordonCampFourteen, cordonCampFifteen, cordonCampSixteen, cordonCampSeventeen,
+			cordonCampEightteen, cordonCampNineteen, cordonCampTwenty, cordonCampTwentyone, cordonCampTwentytwo, cordonCampTwentythree, cordonCampTwentyfour]).addTo(map);
+			var chars = L.layerGroup([cordonCharOne, cordonCharTwo, cordonCharThree]).addTo(map);
+			var exits = L.layerGroup([cordonExitOne, cordonExitTwo, cordonExitThree, cordonExitFour, cordonExitFive, cordonExitSix, cordonExitSeven]).addTo(map);
+			var guides = L.layerGroup([testGuide]).addTo(map);
+			var medics = L.layerGroup([testMedic]).addTo(map);
+			var techs = L.layerGroup([cordonTech]).addTo(map);
+			var traders = L.layerGroup([cordonTraderOne, cordonTraderTwo]).addTo(map);
+			var travels = L.layerGroup([cordonTravelOne, cordonTravelTwo, cordonTravelThree, cordonTravelFour, cordonTravelFive, cordonTravelSix, cordonTravelSeven]).addTo(map);
+			var loners = L.layerGroup([cordonLonerOne, cordonLonerTwo]).addTo(map);
+			var skys = L.layerGroup([testSky]).addTo(map);
+			var bandits = L.layerGroup([testBandit]).addTo(map);
+			var dutys = L.layerGroup([testDuty]).addTo(map);
+			var frees = L.layerGroup([testFree]).addTo(map);
+			var mercs = L.layerGroup([testMerc]).addTo(map);
+			var milis = L.layerGroup([testMili]).addTo(map);
+			var ecos = L.layerGroup([testEco]).addTo(map);
+			var monos = L.layerGroup([testMono]).addTo(map);
+			var renegs = L.layerGroup([testReneg]).addTo(map);
+			var sins = L.layerGroup([testSin]).addTo(map);
+			var unisgs = L.layerGroup([testUnisg]).addTo(map);
+
+		</script>
+		<div id="layercontrol">
+			<h2>Icons</h2> <hr class="topborder">
+			<h3>Map Locations</h3> 
+			<table class="checkboxcontainer">
+				<tr>
+					<td><input type="checkbox" id="all" name="all" oninput="toggleAll(this)"><label for="all"> <img src="images/favicon.ico"> All Icons </label></td>
+					<td><input type="checkbox" id="artifacts" name="artifacts" oninput="toggleArtifacts(this)"><label for="artifacts"> <img src="images/mapicons/artifact.png"> Artifact Zones </label></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" id="beds" name="beds" oninput="toggleBeds(this)"><label for="beds"> <img src="images/mapicons/bed.png"> Beds </label></td>
+					<td><input type="checkbox" id="camps" name="camps" oninput="toggleCamps(this)"><label for="camps"> <img src="images/mapicons/camp.png"> Campfires </label></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" id="travels" name="travels" oninput="toggleTravels(this)"><label for="travels"> <img src="images/mapicons/travel.png"> Fast Travel </label></td>
+					<td><input type="checkbox" id="exits" name="exits" oninput="toggleExits(this)"><label for="exits"> <img src="images/mapicons/exit.png"> Map Exits </label></td>
+				</tr>
+			</table>
+			<hr class="midborder">
+			<h3>Characters</h3> 
+			<table class="checkboxcontainer">
+				<tr>
+					<td><input type="checkbox" id="bars" name="bars" oninput="toggleBars(this)"><label for="bars"> <img src="images/mapicons/bar.png"> Bartenders </label></td>
+					<td><input type="checkbox" id="guides" name="guides" oninput="toggleGuides(this)"><label for="guides"> <img src="images/mapicons/guide.png"> Guides </label></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" id="chars" name="chars" oninput="toggleChars(this)"><label for="chars"> <img src="images/mapicons/char.png"> Imp. Characters </label></td>
+					<td><input type="checkbox" id="medics" name="medics" oninput="toggleMedics(this)"><label for="medics"> <img src="images/mapicons/medic.png"> Medics </label></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" id="techs" name="techs" oninput="toggleTechs(this)"><label for="techs"> <img src="images/mapicons/tech.png"> Technicians </label></td>
+					<td><input type="checkbox" id="traders" name="traders" oninput="toggleTraders(this)"><label for="traders"> <img src="images/mapicons/trader.png"> Traders </label></td>
+				</tr>
+			</table>
+			<hr class="midborder">
+			<h3>Faction Bases</h3>
+			<table class="checkboxcontainer">
+				<tr>
+					<td><input type="checkbox" id="loners" name="loners" oninput="toggleLoners(this)"><label for="loners"> <img src="images/factionicons/loner.png"> Loners </label></td>
+					<td><input type="checkbox" id="skys" name="skys" oninput="toggleSkys(this)"><label for="skys"> <img src="images/factionicons/sky.png"> Clear Sky </label></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" id="bandits" name="bandits" oninput="toggleBandits(this)"><label for="bandits"> <img src="images/factionicons/bandit.png"> Bandits </label></td>
+					<td><input type="checkbox" id="dutys" name="dutys" oninput="toggleDutys(this)"><label for="dutys"> <img src="images/factionicons/duty.png"> Duty </label></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" id="frees" name="frees" oninput="toggleFrees(this)"><label for="frees"> <img src="images/factionicons/free.png"> Freedom </label></td>
+					<td><input type="checkbox" id="mercs" name="mercs" oninput="toggleMercs(this)"><label for="mercs"> <img src="images/factionicons/merc.png"> Mercenaries </label></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" id="milis" name="milis" oninput="toggleMilis(this)"><label for="milis"> <img src="images/factionicons/mili.png"> Military </label></td>
+					<td><input type="checkbox" id="ecos" name="ecos" oninput="toggleEcos(this)"><label for="ecos"> <img src="images/factionicons/eco.png"> Ecologists </label></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" id="monos" name="monos" oninput="toggleMonos(this)"><label for="monos"> <img src="images/factionicons/mono.png"> Monolith </label></td>
+					<td><input type="checkbox" id="renegs" name="renegs" oninput="toggleRenegs(this)"><label for="renegs"> <img src="images/factionicons/reneg.png"> Renegades </label></td>
+				</tr>
+				<tr>
+					<td><input type="checkbox" id="sins" name="sins" oninput="toggleSins(this)"><label for="sins"> <img src="images/factionicons/sin.png"> Sin </label></td>
+					<td><input type="checkbox" id="unisgs" name="unisgs" oninput="toggleUnisgs(this)"><label for="unisgs"> <img src="images/factionicons/unisg.png"> UNISG </label></td>
+				</tr>
+			</table>
+			<script>
+				function toggleAll(element) {
+  			  		if (element.checked) {
+    					map.addLayer(all);
+    				}
+  					else {
+    					map.removeLayer(all);
+  					}
+				}
+				document.getElementById('all').checked = map.hasLayer(all);
+
+				function toggleArtifacts(element) {
+  			  		if (element.checked) {
+    					map.addLayer(artifacts);
+    				}
+  					else {
+    					map.removeLayer(artifacts);
+  					}
+				}
+				document.getElementById('artifacts').checked = map.hasLayer(artifacts);
+
+				function toggleBeds(element) {
+  			  		if (element.checked) {
+    					map.addLayer(beds);
+    				}
+  					else {
+    					map.removeLayer(beds);
+  					}
+				}
+				document.getElementById('beds').checked = map.hasLayer(beds);
+
+				function toggleCamps(element) {
+  			  		if (element.checked) {
+    					map.addLayer(camps);
+    				}
+  					else {
+    					map.removeLayer(camps);
+  					}
+				}
+				document.getElementById('camps').checked = map.hasLayer(camps);
+
+				function toggleTravels(element) {
+  			  		if (element.checked) {
+    					map.addLayer(travels);
+    				}
+  					else {
+    					map.removeLayer(travels);
+  					}
+				}
+				document.getElementById('travels').checked = map.hasLayer(travels);
+
+				function toggleExits(element) {
+  			  		if (element.checked) {
+    					map.addLayer(exits);
+    				}
+  					else {
+    					map.removeLayer(exits);
+  					}
+				}
+				document.getElementById('exits').checked = map.hasLayer(exits);
+
+				function toggleBars(element) {
+  			  		if (element.checked) {
+    					map.addLayer(bars);
+    				}
+  					else {
+    					map.removeLayer(bars);
+  					}
+				}
+				document.getElementById('bars').checked = map.hasLayer(bars);
+
+				function toggleGuides(element) {
+  			  		if (element.checked) {
+    					map.addLayer(guides);
+    				}
+  					else {
+    					map.removeLayer(guides);
+  					}
+				}
+				document.getElementById('guides').checked = map.hasLayer(guides);
+
+				function toggleChars(element) {
+  			  		if (element.checked) {
+    					map.addLayer(chars);
+    				}
+  					else {
+    					map.removeLayer(chars);
+  					}
+				}
+				document.getElementById('chars').checked = map.hasLayer(chars);
+
+				function toggleMedics(element) {
+  			  		if (element.checked) {
+    					map.addLayer(medics);
+    				}
+  					else {
+    					map.removeLayer(medics);
+  					}
+				}
+				document.getElementById('medics').checked = map.hasLayer(medics);
+
+				function toggleTechs(element) {
+  			  		if (element.checked) {
+    					map.addLayer(techs);
+    				}
+  					else {
+    					map.removeLayer(techs);
+  					}
+				}
+				document.getElementById('techs').checked = map.hasLayer(techs);
+
+				function toggleTraders(element) {
+  			  		if (element.checked) {
+    					map.addLayer(traders);
+    				}
+  					else {
+    					map.removeLayer(traders);
+  					}
+				}
+				document.getElementById('traders').checked = map.hasLayer(traders);
+
+				function toggleLoners(element) {
+  			  		if (element.checked) {
+    					map.addLayer(loners);
+    				}
+  					else {
+    					map.removeLayer(loners);
+  					}
+				}
+				document.getElementById('loners').checked = map.hasLayer(loners);
+
+				function toggleSkys(element) {
+  			  		if (element.checked) {
+    					map.addLayer(skys);
+    				}
+  					else {
+    					map.removeLayer(skys);
+  					}
+				}
+				document.getElementById('skys').checked = map.hasLayer(skys);
+
+				function toggleBandits(element) {
+  			  		if (element.checked) {
+    					map.addLayer(bandits);
+    				}
+  					else {
+    					map.removeLayer(bandits);
+  					}
+				}
+				document.getElementById('bandits').checked = map.hasLayer(bandits);
+
+				function toggleDutys(element) {
+  			  		if (element.checked) {
+    					map.addLayer(dutys);
+    				}
+  					else {
+    					map.removeLayer(dutys);
+  					}
+				}
+				document.getElementById('dutys').checked = map.hasLayer(dutys);
+
+				function toggleFrees(element) {
+  			  		if (element.checked) {
+    					map.addLayer(frees);
+    				}
+  					else {
+    					map.removeLayer(frees);
+  					}
+				}
+				document.getElementById('frees').checked = map.hasLayer(frees);
+
+				function toggleMercs(element) {
+  			  		if (element.checked) {
+    					map.addLayer(mercs);
+    				}
+  					else {
+    					map.removeLayer(mercs);
+  					}
+				}
+				document.getElementById('mercs').checked = map.hasLayer(mercs);
+
+				function toggleMilis(element) {
+  			  		if (element.checked) {
+    					map.addLayer(milis);
+    				}
+  					else {
+    					map.removeLayer(milis);
+  					}
+				}
+				document.getElementById('milis').checked = map.hasLayer(milis);
+
+				function toggleEcos(element) {
+  			  		if (element.checked) {
+    					map.addLayer(ecos);
+    				}
+  					else {
+    					map.removeLayer(ecos);
+  					}
+				}
+				document.getElementById('ecos').checked = map.hasLayer(ecos);
+
+				function toggleMonos(element) {
+  			  		if (element.checked) {
+    					map.addLayer(monos);
+    				}
+  					else {
+    					map.removeLayer(monos);
+  					}
+				}
+				document.getElementById('monos').checked = map.hasLayer(monos);
+
+				function toggleRenegs(element) {
+  			  		if (element.checked) {
+    					map.addLayer(renegs);
+    				}
+  					else {
+    					map.removeLayer(renegs);
+  					}
+				}
+				document.getElementById('renegs').checked = map.hasLayer(renegs);
+
+				function toggleSins(element) {
+  			  		if (element.checked) {
+    					map.addLayer(sins);
+    				}
+  					else {
+    					map.removeLayer(sins);
+  					}
+				}
+				document.getElementById('sins').checked = map.hasLayer(sins);
+
+				function toggleUnisgs(element) {
+  			  		if (element.checked) {
+    					map.addLayer(unisgs);
+    				}
+  					else {
+    					map.removeLayer(unisgs);
+  					}
+				}
+				document.getElementById('unisgs').checked = map.hasLayer(unisgs);
+
+			</script>
+		</div>
+	</div>
+</body>
+</html>

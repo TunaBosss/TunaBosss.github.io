@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>The S.T.A.L.K.E.R. GAMMA PDA</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="style.css">
+	<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+</head>
+<body>
+	<div class="header">
+		<p>Version 0.1.0</p> <br />
+		<h1>The S.T.A.L.K.E.R. <br /> GAMMA PDA</h1>
+		<a href="index.html">Map</a>
+		<a href="guide.html">Guide</a>
+		<a href="about.html">About</a>
+	</div>
+	<div class="guidemain">
+		<div class="guidecontainer">
+			<button type="button" class="collapsible">Guide Example</button>
+			<div class="content">
+  				<p>Coming Soon!</p>
+			</div>
+		</div>
+		<p class="guidenote"></p>
+		<script>
+			var coll = document.getElementsByClassName("collapsible");
+			var i;
+
+			for (i = 0; i < coll.length; i++) {
+  				coll[i].addEventListener("click", function() {
+    				this.classList.toggle("active");
+    				var content = this.nextElementSibling;
+    				if (content.style.maxHeight) {
+      					content.style.maxHeight = null;
+    				} else {
+      					content.style.maxHeight = content.scrollHeight + "px";
+    				}
+  				});
+			}
+		</script>
+	</div>
+</body>
+</html>

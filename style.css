@@ -1,0 +1,179 @@
+* {
+	box-sizing:border-box;
+	font-family: "Roboto Mono", monospace;
+}
+
+body {
+	margin:0;
+}
+
+.header {
+	padding: 10px 10px 45px 10px;
+	text-align: center;
+	background-color:#101010;
+	color:#F4F7F5;
+	border-bottom-style: solid;
+	border-width: 3px;
+	border-color: #A6C188;
+}
+
+.header h1{
+	font-size:40px;
+	text-align: center;
+	margin: 0;
+}
+
+.header a {
+	display:inline-block;
+	color:#F4F7F5;
+	font-size:20px;
+	margin: 0 100px;
+	padding:10px 20px;
+	text-decoration:none;
+	transition:0.3s;
+}
+
+.header a:hover {
+	background-color:#A6C188;
+	color:#101010;
+}
+
+.header p {
+	float:right;
+	color: #565950;
+	margin:0;
+}
+
+.main {
+	height:725.5px;
+	width:100%;
+}
+
+#map {
+	height:725.5px;
+	width:70%;
+	background: #565950;
+	float:left;
+}
+
+#layercontrol {
+	height:725.5px;
+	width:30%;
+	float:left;
+	background: #101010;
+	color: #F4F7F5;
+	border-left-style: solid;
+	border-width: 3px;
+	border-color: #A6C188;
+	text-align: center;
+}
+
+input {
+	vertical-align:baseline;
+	transform: scale(1.15);
+}
+
+label {
+	font-size: 17px;
+}
+
+.topborder {
+	border-color: #A6C188;
+	border-width: 1.5px;
+	border-style: solid;
+}
+
+.midborder {
+	display:block;
+	border-color:#565950;
+	border-width:1px;
+	border-style:solid;
+	margin-left:50px;
+	margin-right:50px;
+}
+
+.checkboxcontainer {
+	margin-bottom: 19px;
+	border-spacing: 8px;
+	margin-left:60px;
+}
+
+tr {
+	text-align: left;
+}
+
+td {
+	width:218px;
+}
+
+#layercontrol img {
+	height:22px;
+	vertical-align:text-bottom;
+}
+
+.guidemain {
+	background-color: #101010;
+	height:100vh;
+}
+
+.guidecontainer {
+	width:66%;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+/* Style the button that is used to open and close the collapsible content */
+.collapsible {
+	background-color:#101010;
+	color:#F4F7F5;
+	cursor: pointer;
+	padding: 18px;
+	width: 100%;
+	border: none;
+	text-align: left;
+	outline: none;
+	font-size: 16px;
+	font-weight: bold;
+	transition:0.3s;
+}
+  
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .collapsible:hover {
+	background-color:#A6C188;
+	color:#101010;
+}
+
+/* Style the collapsible content. Note: hidden by default */
+.content {
+	padding: 0 18px;
+	background-color:#565950;
+	color:#F4F7F5;
+	max-height: 0;
+	overflow: hidden;
+	transition: max-height 0.2s ease-out;
+}
+
+.collapsible:after {
+	content: '+'; /* Unicode character for "plus" sign (+) */
+	font-size: 20px;
+	font-weight:bolder;
+	color: #565950;
+	float: right;
+	margin-left: 5px;
+}
+
+.active:after {
+	content: "-"; /* Unicode character for "minus" sign (-) */
+	color:#101010;
+}
+
+.guidenote {
+	width:66%;
+	color:#F4F7F5;
+	font-size:20px;
+	font-weight: bold;
+	text-align: center;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:50px;
+}
